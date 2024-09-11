@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Energy Community DAO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  
+  <style>
+    input, optgroup, select, textarea {
+      font-size: 12px !important;
+      height: 30px;
+    }
+  </style>
+  </head>
+
+  </head>
+  <body>
+    <div class="container"  style="margin-top: 20px;margin-bottom: 50px;">
+      <div class="row" style="border-bottom: 1px solid #aeaeae;padding-bottom: 10px;">
+        <div class="col">
+  <img src="eap_logo.png" width="150px" />
+</div>
+    <div class="col">
+    <h2>Energy Community DAO</h2>
+    
+</div>
+</div>
+
+    <div class="row" style="margin-top: 10px;">
+      <div class="col" style="background-color: #f5eef8;">
+        <br/>
+        <b>Administrator Actions </b><br/> Smart Cotract Owner
+        <br/>
+        <br/>
+         <!-- Add New Member -->
+    <section>
+      <h3>Add Member</h3>
+      <div class="row">
+      <div class="col">
+        <input class="form-control"  type="text" id="memberAddress" placeholder="New Member Address" />
+        <br/>
+        <input  class="form-control" type="number" id="memberShares" placeholder="New Memebr Shares" />
+      </div>
+      <div class="col">
+      <button  type="button" class="btn btn-primary" onclick="addMember()">Add Member</button>
+    </div>
+    </div>
+    </section>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <i>V. C. Kalavrouziotis</i>
+    <br>
+    <b>"A Blockchain-Driven Architecture for Enhancing EV Charging Networks and Energy Communities"</b>
+    <br/>
+    <br/>
+    <br/>
+      </div>
+      <div class="col"  style="background-color: #d4e6f1;">
+        <br/>
+        <b>User Actions</b> <br/> Energy Community Member
+        <br/>
+        <br/>
+    <!-- Create Proposal -->
+    <section>
+      <h3>Create Proposal</h3>
+      <div class="row">
+        <div class="col">
+      <input  class="form-control" type="text" id="proposalDescription" placeholder="New Proposal Description" />
+      </div>
+      <div class="col">
+      <button  type="button" class="btn btn-warning" onclick="createProposal()">Create Proposal</button>
+      </div>
+      </div>
+    </section>
+
+    <!-- Vote on Proposal -->
+    <section>
+      <br/>
+      <h3>Vote on Proposal</h3>
+      <div class="row">
+        <div class="col">
+      <input class="form-control"  type="number" id="proposalId" placeholder="Proposal ID" />
+      <br/>
+      <select id="voteSupport">
+        <option value="true">For</option>
+        <option value="false">Against</option>
+      </select>
+    </div>
+    <div class="col">
+      <button  type="button" class="btn btn-warning" onclick="vote()">Vote</button>
+      </div>
+      </div>
+    </section>
+
+    <!-- Update Energy Consumption -->
+    <section>
+      <br/>
+      <h3>Update Energy Consumption</h3>
+      <div class="row">
+        <div class="col">
+      <input  class="form-control" type="number" id="energyConsumed" placeholder="Amount (kWh)" /><br/>
+      <input class="form-control"  type="text" id="consumptionMember" placeholder="Member Address" />
+      </div>
+      <div class="col">
+      <button  type="button" class="btn btn-warning" onclick="updateEnergyConsumption()">Update Consumption</button>
+      </div>
+      </div>
+    </section>
+
+    <!-- Update Energy Production -->
+    <section>
+      <br/>
+      <h3>Update Energy Production</h3>
+      <div class="row">
+        <div class="col">
+      <input class="form-control"  type="number" id="energyProduced" placeholder="Amount (kWh)" /><br/>
+      <input class="form-control"  type="text" id="productionMember" placeholder="Member Address" />
+      </div>
+      <div class="col">
+      <button  type="button" class="btn btn-warning" onclick="updateEnergyProduction()">Update Production</button>
+      </div>
+    </section>
+
+    <!-- Charge EV -->
+    <section>
+      <br/>
+      <h3>Charge EV</h3>
+      <div class="row">
+        <div class="col">
+      <input class="form-control"  type="number" id="evChargeAmount" placeholder="Amount (kWh)" /><br/>
+      <input class="form-control"  type="text" id="evChargeMember" placeholder="Member Address" />
+      </div>
+      <div class="col">
+      <button  type="button" class="btn btn-warning" onclick="chargeEV()">Charge EV</button>
+      </div>
+      </div>
+    </section>
+
+      </div>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js"></script>
+  </body>
+</html>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+<script>
+
+
+  // Contract ABI and Address
+  const contractABI = [
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "_minimumQuorum",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "nonpayable",
+      type: "constructor",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "uint256",
+          name: "id",
+          type: "uint256",
+        },
+        {
+          indexed: false,
+          internalType: "string",
+          name: "description",
+          type: "string",
+        },
+      ],
+      name: "NewProposal",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "uint256",
+          name: "proposalId",
+          type: "uint256",
+        },
+        {
+          indexed: true,
+          internalType: "address",
+          name: "voter",
+          type: "address",
+        },
+        {
+          indexed: false,
+          internalType: "bool",
+          name: "support",
+          type: "bool",
+        },
+      ],
+      name: "Vote",
+      type: "event",
+    },
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "_member",
+          type: "address",
+        },
+        {
+          internalType: "uint256",
+          name: "_shares",
+          type: "uint256",
+        },
+      ],
+      name: "addMember",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "_amount",
+          type: "uint256",
+        },
+        {
+          internalType: "address",
+          name: "_member",
+          type: "address",
+        },
+      ],
+      name: "chargeEV",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "_description",
+          type: "string",
+        },
+      ],
+      name: "createProposal",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      name: "energyBalances",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      name: "evChargingUsage",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      name: "memberList",
+      outputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      name: "members",
+      outputs: [
+        {
+          internalType: "address",
+          name: "memberAddress",
+          type: "address",
+        },
+        {
+          internalType: "uint256",
+          name: "shares",
+          type: "uint256",
+        },
+        {
+          internalType: "bool",
+          name: "isMember",
+          type: "bool",
+        },
+        {
+          internalType: "uint256",
+          name: "memberEnergyProduced",
+          type: "uint256",
+        },
+        {
+          internalType: "uint256",
+          name: "memberEnergyConsumed",
+          type: "uint256",
+        },
+        {
+          internalType: "uint256",
+          name: "memberEvChargingUsage",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "minimumQuorum",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "owner",
+      outputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "proposalCount",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      name: "proposals",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "id",
+          type: "uint256",
+        },
+        {
+          internalType: "string",
+          name: "description",
+          type: "string",
+        },
+        {
+          internalType: "uint256",
+          name: "votesFor",
+          type: "uint256",
+        },
+        {
+          internalType: "uint256",
+          name: "votesAgainst",
+          type: "uint256",
+        },
+        {
+          internalType: "bool",
+          name: "executed",
+          type: "bool",
+        },
+        {
+          internalType: "uint256",
+          name: "deadline",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "totalEnergyConsumed",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "totalEnergyProduced",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "_amount",
+          type: "uint256",
+        },
+        {
+          internalType: "address",
+          name: "_member",
+          type: "address",
+        },
+      ],
+      name: "updateEnergyConsumption",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "_amount",
+          type: "uint256",
+        },
+        {
+          internalType: "address",
+          name: "_member",
+          type: "address",
+        },
+      ],
+      name: "updateEnergyProduction",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "_proposalId",
+          type: "uint256",
+        },
+        {
+          internalType: "bool",
+          name: "_support",
+          type: "bool",
+        },
+      ],
+      name: "vote",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "withdrawFunds",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      stateMutability: "payable",
+      type: "receive",
+    },
+  ];
+  const contractAddress = "0x284fce0d55f6f92201bf03817779d306d95e9b03"; // Replace with your deployed contract address
+
+  // Initialize Web3
+  let web3;
+  let contract;
+
+  window.addEventListener("load", async () => {
+    console.log(window.ethereum);
+    if (window.ethereum) {
+      web3 = new Web3(window.ethereum);
+      try {
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        initContract();
+      } catch (error) {
+        console.error("User denied account access");
+      }
+    } else if (window.Web3) {
+      web3 = new Web3(window.Web3.currentProvider);
+      console.log(web3);
+      initContract();
+    } else {
+      console.log("Non-Ethereum browser detected. You should consider trying MetaMask!");
+    }
+  });
+
+  // Initialize the contract
+  function initContract() {
+    contract = new web3.eth.Contract(contractABI, contractAddress);
+  }
+
+  // Add a new member
+  async function addMember() {
+    const address = document.getElementById("memberAddress").value;
+    const shares = document.getElementById("memberShares").value;
+    const accounts = await web3.eth.getAccounts();
+    console.log(accounts[0]);
+    try {
+      await contract.methods.addMember(address, shares).send({ from: accounts[0] });
+      alert("Member added successfully!");
+    } catch (error) {
+      console.error("Error adding member:", error);
+      alert("Failed to add member.");
+    }
+  }
+
+  // Create a new proposal
+  async function createProposal() {
+    const description = document.getElementById("proposalDescription").value;
+    const accounts = await web3.eth.getAccounts();
+    try {
+      await contract.methods.createProposal(description).send({ from: accounts[0] });
+      alert("Proposal created successfully!");
+    } catch (error) {
+      console.error("Error creating proposal:", error);
+      alert("Failed to create proposal.");
+    }
+  }
+
+  // Vote on a proposal
+  async function vote() {
+    const proposalId = document.getElementById("proposalId").value;
+    const support = document.getElementById("voteSupport").value === "true";
+    const accounts = await web3.eth.getAccounts();
+    try {
+      await contract.methods.vote(proposalId, support).send({ from: accounts[0] });
+      alert("Voted successfully!");
+    } catch (error) {
+      console.error("Error voting:", error);
+      alert("Failed to vote.");
+    }
+  }
+
+  // Update energy consumption
+  async function updateEnergyConsumption() {
+    const amount = document.getElementById("energyConsumed").value;
+    const member = document.getElementById("consumptionMember").value;
+    const accounts = await web3.eth.getAccounts();
+    try {
+      await contract.methods.updateEnergyConsumption(amount, member).send({ from: accounts[0] });
+      alert("Energy consumption updated successfully!");
+    } catch (error) {
+      console.error("Error updating consumption:", error);
+      alert("Failed to update consumption.");
+    }
+  }
+
+  // Update energy production
+  async function updateEnergyProduction() {
+    const amount = document.getElementById("energyProduced").value;
+    const member = document.getElementById("productionMember").value;
+    const accounts = await web3.eth.getAccounts();
+    try {
+      await contract.methods.updateEnergyProduction(amount, member).send({ from: accounts[0] });
+      alert("Energy production updated successfully!");
+    } catch (error) {
+      console.error("Error updating production:", error);
+      alert("Failed to update production.");
+    }
+  }
+
+  // Charge EV
+  async function chargeEV() {
+    const amount = document.getElementById("evChargeAmount").value;
+    const member = document.getElementById("evChargeMember").value;
+    const accounts = await web3.eth.getAccounts();
+    try {
+      await contract.methods.chargeEV(amount, member).send({ from: accounts[0], value: web3.utils.toWei("0.01", "ether") }); // Modify as needed
+      alert("EV charged successfully!");
+    } catch (error) {
+      console.error("Error charging EV:", error);
+      alert("Failed to charge EV.");
+    }
+  }
+</script>
